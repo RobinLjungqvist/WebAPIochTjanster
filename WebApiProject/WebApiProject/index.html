@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Product App</title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <div>
+        <a href="index.html">Titles</a>
+        <a href="Authors.html">Authors</a>
+
+    </div>
+    <div>
+        <h2>All Titles</h2>
+        <ul id="Titles" />
+    </div>
+    <div>
+        <h2>Search by ISBN</h2>
+        <input type="text" id="titleISBN" size="5" />
+        <input type="button" value="Search" onclick="FindBook();" />
+        <p id="isbnsearchresult">
+
+        </p>
+        <hr/>
+        <div>
+            <h2>Add new</h2>
+            <label>ISBN</label>
+            <input type="text" id="ISBN" /> <br/>
+            <label>CopyRight</label>
+            <input type="text" id="copyright" /><br />
+            <label>Edition Number</label>
+            <input type="text" id="edNR" /><br />
+            <label>Title</label>
+            <input type="text" id="newTitle" /><br />
+            <input type="submit" value="Submit" onclick="SubmitBook();" />
+        </div>
+        <div>
+            <h2>Delete Title</h2>
+            <p>Delete by ISBN</p>
+            <label>ISBN</label><input type="text" id="deleteisbn" />
+            <input type="button" value="delete" onclick="DeleteTitle();" />
+        </div>
+    </div>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+        var bookUri = "api/Titles";
+        $(document).ready(function() {
+            getBooks();
+        });
+        function getBooks() {
+            $.getJSON(bookUri)
+            .done(function (data) {
+                $('#Titles').html("");
+                $.each(data, function (key, item) {
+                    $('<li>', { text: formatTitle(item) }).appendTo('#Titles');
+                });
+            });
+        };
+
+        function formatTitle(item) {
+            return item.Title + " ISBN: " + item.ISBN;
+        }
+
+        function FindBook() {
+            var id = $('#titleISBN').val();
+            $.getJSON(bookUri + "?isbn=" + id).
+            done(function (data) {
+                $('#isbnsearchresult').text(formatTitle(data));
+            })
+            .fail(function (jqXHR, textStatus, err) {
+                $('#isbnsearchresult').text("Error " + err);
+            });
+        }
+        function SubmitBook() {
+            var title = $('#newTitle').val();
+            var isbn = $('#ISBN').val();
+            var copyright = $('#copyright').val();
+            var edNR = $('#edNR').val();
+            var newTitle = {
+                Title: title,
+                ISBN: isbn,
+                Copyright: copyright,
+                EditionNumber: edNR
+            };
+
+            $.ajax({
+                type: "POST",
+                url: bookUri,
+                data: newTitle,
+                success: function () {
+                    alert("Success");
+                    getBooks();
+                }
+                
+            });
+
+        };
+
+        function DeleteTitle() {
+            let isbnToDelete = $('#deleteisbn').val();
+
+            $.ajax({
+                type: "DELETE",
+                url: bookUri + "/" + isbnToDelete,
+                success: function () {
+                    alert("Success");
+                    getBooks();
+                }
+
+            });
+        }
+    </script>
+</body>
+</html>

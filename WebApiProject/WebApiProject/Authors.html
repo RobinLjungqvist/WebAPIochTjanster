@@ -1,0 +1,114 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Product App</title>
+    <meta charset="utf-8" />
+</head>
+<body>
+    <div>
+        <a href="index.html">Titles</a>
+        <a href="Authors.html">Authors</a>
+
+    </div>
+    <div>
+        <h2>All Authors</h2>
+        <ul id="Authors" />
+    </div>
+    <div>
+        <h2>Search by ISBN</h2>
+        <input type="text" id="authorid" size="5" />
+        <input type="button" value="Search" onclick="FindAuthor();" />
+        <p id="authorresult">
+
+        </p>
+        <hr />
+        <div>
+            <h2>Add new</h2>
+            <label>FirstName</label>
+            <input type="text" id="firstname" /> <br />
+            <label>LastName</label>
+            <input type="text" id="lastname" /><br />
+            <label>HomeTel</label>
+            <input type="text" id="tel" /><br />
+            <label>Age</label>
+            <input type="number" id="age" /><br />
+            <input type="submit" value="Submit" onclick="SubmitAuthor();" />
+        </div>
+        <div>
+            <h2>Delete Author</h2>
+            <p>Delete by ID</p>
+            <label>ISBN</label><input type="text" id="deleteid" />
+            <input type="button" value="delete" onclick="DeleteAuthor();" />
+        </div>
+    </div>
+    <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    <script>
+        var authorURI = "api/Authors";
+        $(document).ready(function() {
+            getAuthors();
+        });
+        function getAuthors() {
+            $.getJSON(authorURI)
+            .done(function (data) {
+                $('#Authors').html("");
+                $.each(data, function (key, item) {
+                    $('<li>', { text: formatTitle(item) }).appendTo('#Authors');
+                });
+            });
+        };
+
+        function formatTitle(item) {
+            return item.FirstName + " " + item.LastName + " ID: " + item.AuthorID;
+        }
+
+        function FindAuthor() {
+            var id = $('#authorid').val();
+            $.getJSON(authorURI + "?id=" + id).
+            done(function (data) {
+                $('#authorresult').text(formatTitle(data));
+            })
+            .fail(function (jqXHR, textStatus, err) {
+                $('#authorresult').text("Error " + err);
+            });
+        }
+        function SubmitAuthor() {
+            var fname = $('#firstname').val();
+            var lname = $('#lastname').val();
+            var age = $('#age').val();
+            var tel = $('#tel').val();
+            var newTitle = {
+                FirstName: fname,
+                LastName: lname,
+                Age: age,
+                HomeTel: tel
+            };
+
+            $.ajax({
+                type: "POST",
+                url: authorURI,
+                data: newTitle,
+                success: function () {
+                    alert("Success");
+                    getAuthors();
+                }
+
+            });
+
+        };
+
+        function DeleteAuthor() {
+            let deleteid = $('#deleteid').val();
+
+            $.ajax({
+                type: "DELETE",
+                url: authorURI + "/" + deleteid,
+                success: function () {
+                    alert("Success");
+                    getAuthors();
+                }
+
+            });
+        }
+    </script>
+</body>
+</html>
