@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:tns="http://free-web-services.com/soap" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" targetNamespace="http://free-web-services.com/soap" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsdl:documentation>This is a test web service.
+
+Available methods:
+
+ * add : Adds two integers.
+</wsdl:documentation>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://free-web-services.com/soap">
+      <xsd:element name="addRequest">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="1" maxOccurs="1" name="a" type="xsd:int" />
+            <xsd:element minOccurs="1" maxOccurs="1" name="b" type="xsd:int" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="addResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element minOccurs="0" maxOccurs="1" name="sum" type="xsd:int" />
+            <xsd:element minOccurs="0" maxOccurs="1" name="time" type="xsd:double" />
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="addSoapIn">
+    <wsdl:part name="parameters" element="tns:addRequest" />
+  </wsdl:message>
+  <wsdl:message name="addSoapOut">
+    <wsdl:part name="parameters" element="tns:addResponse" />
+  </wsdl:message>
+  <wsdl:portType name="addSoap">
+    <wsdl:operation name="add">
+      <wsdl:input message="tns:addSoapIn" />
+      <wsdl:output message="tns:addSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="addSoap" type="tns:addSoap">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="add">
+      <soap:operation soapAction="http://free-web-services.com/soap" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="soap">
+    <wsdl:port name="addSoap" binding="tns:addSoap">
+      <soap:address location="http://free-web-services.com/soap" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
