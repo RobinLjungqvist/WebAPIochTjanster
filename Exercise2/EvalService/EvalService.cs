@@ -31,7 +31,7 @@ namespace EvalServiceLibrary
         {
             var evals = Evals.Where(e => e.Submitter == submitter);
 
-            return (evals != null) ? evals.ToList() : Evals;
+            return (evals.ToList().Count > 0) ? evals.ToList() : Evals.ToList();
         }
 
         public List<Eval> GetEvals()
@@ -79,13 +79,13 @@ namespace EvalServiceLibrary
         [OperationContract]
         List <Eval> GetEvals();
         [OperationContract]
-        [WebGet(UriTemplate="eval/{id}")]
+        [WebGet(UriTemplate="eval?id={id}")]
         Eval GetEval(string id);
         [OperationContract]
-        [WebGet(UriTemplate="evals/{submitter}")]
+        [WebGet(UriTemplate="evals?submitter={submitter}")]
         List<Eval> GetEvalBySubmitter(string submitter);
         [OperationContract]
-        [WebInvoke(Method="DELETE",UriTemplate="eval/{id}")]
+        [WebInvoke(Method="DELETE",UriTemplate="eval?id={id}")]
         void RemoveEval(string id);
     }
 }

@@ -58,8 +58,8 @@ namespace WCFRestClient
                     case "list":
                         Console.WriteLine("Enter name of submitter");
                         var submitterName = Console.ReadLine();
-                        if (!string.IsNullOrWhiteSpace(submitterName))
-                        {
+                        //if (!string.IsNullOrWhiteSpace(submitterName))
+                        //{
 
                             var evalsBySubmitter = client.GetEvalBySubmitter(submitterName);
                             if (evalsBySubmitter != null)
@@ -71,11 +71,11 @@ namespace WCFRestClient
                             {
                                 Console.WriteLine("No Evals found by {0}", submitterName);
                             }
-                        }
-                        else
-                        {
-                            Console.WriteLine("Invalid input!");
-                        }
+                        //}
+                        //else
+                        //{
+                        //    Console.WriteLine("Invalid input!");
+                        //}
                         Console.ReadLine();
                         command = null;
                         break;
